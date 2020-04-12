@@ -16,6 +16,26 @@ class App extends React.Component {
 		this.loadFromServer(this.state.pageSize);
 	}
 
+	onCreate(newEmployee) {
+		follow(client, root, ['employees']).then(employeeCollection => {
+			return client({
+				method: 'POST',
+				path: employeeCollection.entity._links.self.href,
+				entity: newEmployee,
+				headers: {'Content-Type': 'application/json'}
+			})
+		}).then(response => {
+			return follow(client, root, [
+				{rel: 'employees', params: {'size': this.state.pageSize}}]);
+		}).done(response => {
+			if (typeof response.entity._links.last !== "undefined") {
+				this.onNavigate(response.entity._links.last.href);
+			} else {
+				this.onNavigate(response.entity._links.self.href);
+			}
+		});
+	}
+
 	render() {
 		return (
 			<div>
