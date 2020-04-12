@@ -41,7 +41,6 @@ class App extends React.Component {
 	}
 
 	onDelete(employee) {
-		console.log('onDelete empl', employee);
 		client({method: 'DELETE', path: employee._links.self.href}).done(response => {
 			this.loadFromServer(this.state.pageSize);
 		});
